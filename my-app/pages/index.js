@@ -166,7 +166,7 @@ export default function Home(){
       <div>
         <Head>
           <title>Krypto Civilians</title>
-          <meta name="description" content="Whitelist-Dapp" />
+          <meta name="description" content="NFT-Dapp" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <div className={styles.main}>
