@@ -92,16 +92,15 @@ export default function Home(){
 
     async function withdraw(){
       try{
-        const provider = await getSignerOrProvider();
-        const nftContract = new Contract(NFT_ADDRESS,ABI,provider);
+        const signer = await getSignerOrProvider(true);
+        const nftContract = new Contract(NFT_ADDRESS,ABI,signer);
         const tx = await nftContract.withdraw();
         setLoading(true);
         await tx.wait();
         setLoading(false);
       }catch(err){
-        console.error(err);
         window.alert("Transaction Failed")
-        return false;
+        console.error(err);
       }
     }
 
@@ -142,6 +141,7 @@ export default function Home(){
         connectWallet();
         getTokenIdsMinted();
         checkIfSaleStarted();
+        getOwner();
       }
     },[walletConnected])
 
@@ -155,13 +155,31 @@ export default function Home(){
       if(isOwner && !saleStarted){
         return (<button onClick={startSale} className={styles.button}>Start Sale</button>);
       }
-      if(isOwner && saleStarted){
-        return (<button onClick={withdraw} className={styles.button}>Withdraw</button>);
-      }
       if(!saleStarted){
         return (<button className={styles.button}>Sale hasn't started yet</button>);
       }
       if(saleStarted){
+        if(isOwner){
+          return(
+            <div>
+            <div className={styles.description}>
+              Sale started!,Mint your Krypto Civilians🥳
+            </div>
+            <input
+              className = {styles.input}
+              type="number"
+              placeholder="Number of NFTs"
+              onChange={(e) => setQuantity(e.target.value)}>
+            </input>
+            <button onClick={mint} className={styles.button}>
+                Mint🚀
+            </button>
+            <button onClick={withdraw} className={styles.button}>
+                Withdraw
+            </button>
+          </div>
+          )
+        }
         return(
           <div>
             <div className={styles.description}>
