@@ -90,6 +90,21 @@ export default function Home(){
       }
     }
 
+    async function withdraw(){
+      try{
+        const provider = await getSignerOrProvider();
+        const nftContract = new Contract(NFT_ADDRESS,ABI,provider);
+        const tx = await nftContract.withdraw();
+        setLoading(true);
+        await tx.wait();
+        setLoading(false);
+      }catch(err){
+        console.error(err);
+        window.alert("Transaction Failed")
+        return false;
+      }
+    }
+
     async function getOwner(){
       try{
         const provider = await getSignerOrProvider();
@@ -120,7 +135,7 @@ export default function Home(){
     useEffect(() =>{
       if(!walletConnected){
         web3ModalRef.current = new Web3Modal({
-          network:"sepolia",
+          network:"goerli",
           providerOptions:{},
           disableInjectedProvider: false,
         });
@@ -139,6 +154,9 @@ export default function Home(){
       }
       if(isOwner && !saleStarted){
         return (<button onClick={startSale} className={styles.button}>Start Sale</button>);
+      }
+      if(isOwner && saleStarted){
+        return (<button onClick={withdraw} className={styles.button}>Withdraw</button>);
       }
       if(!saleStarted){
         return (<button className={styles.button}>Sale hasn't started yet</button>);
